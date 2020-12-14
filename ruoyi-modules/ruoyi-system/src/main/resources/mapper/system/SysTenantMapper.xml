@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysTenantMapper">
+    
+    <resultMap type="SysTenant" id="SysTenantResult">
+        <result property="tenantId"    column="tenant_id"    />
+        <result property="tenantType"    column="tenant_type"    />
+        <result property="tenantName"    column="tenant_name"    />
+        <result property="tenantDesc"    column="tenant_desc"    />
+        <result property="createUser"    column="create_user"    />
+        <result property="updateUser"    column="update_user"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysTenantVo">
+        select tenant_id, tenant_type, tenant_name, tenant_desc, create_user, update_user, create_time, update_time from sys_tenant
+    </sql>
+
+    <select id="selectSysTenantList" parameterType="SysTenant" resultMap="SysTenantResult">
+        <include refid="selectSysTenantVo"/>
+        <where>  
+            <if test="tenantType != null "> and tenant_type = #{tenantType}</if>
+            <if test="tenantName != null  and tenantName != ''"> and tenant_name like concat('%', #{tenantName}, '%')</if>
+            <if test="tenantDesc != null  and tenantDesc != ''"> and tenant_desc = #{tenantDesc}</if>
+            <if test="createUser != null "> and create_user = #{createUser}</if>
+            <if test="updateUser != null "> and update_user = #{updateUser}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysTenantById" parameterType="Integer" resultMap="SysTenantResult">
+        <include refid="selectSysTenantVo"/>
+        where tenant_id = #{tenantId}
+    </select>
+        
+    <insert id="insertSysTenant" parameterType="SysTenant">
+        insert into sys_tenant
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="tenantId != null">tenant_id,</if>
+            <if test="tenantType != null">tenant_type,</if>
+            <if test="tenantName != null">tenant_name,</if>
+            <if test="tenantDesc != null">tenant_desc,</if>
+            <if test="createUser != null">create_user,</if>
+            <if test="updateUser != null">update_user,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="tenantId != null">#{tenantId},</if>
+            <if test="tenantType != null">#{tenantType},</if>
+            <if test="tenantName != null">#{tenantName},</if>
+            <if test="tenantDesc != null">#{tenantDesc},</if>
+            <if test="createUser != null">#{createUser},</if>
+            <if test="updateUser != null">#{updateUser},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysTenant" parameterType="SysTenant">
+        update sys_tenant
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="tenantType != null">tenant_type = #{tenantType},</if>
+            <if test="tenantName != null">tenant_name = #{tenantName},</if>
+            <if test="tenantDesc != null">tenant_desc = #{tenantDesc},</if>
+            <if test="createUser != null">create_user = #{createUser},</if>
+            <if test="updateUser != null">update_user = #{updateUser},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where tenant_id = #{tenantId}
+    </update>
+
+    <delete id="deleteSysTenantById" parameterType="Integer">
+        delete from sys_tenant where tenant_id = #{tenantId}
+    </delete>
+
+    <delete id="deleteSysTenantByIds" parameterType="String">
+        delete from sys_tenant where tenant_id in 
+        <foreach item="tenantId" collection="array" open="(" separator="," close=")">
+            #{tenantId}
+        </foreach>
+    </delete>
+    
+</mapper>
