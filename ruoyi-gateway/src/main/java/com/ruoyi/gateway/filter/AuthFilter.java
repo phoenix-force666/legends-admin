@@ -26,6 +26,11 @@ import reactor.core.publisher.Mono;
  * 网关鉴权
  * 
  * @author ruoyi
+ *
+ * update 20201215
+ * 添加 微信登录接口过滤
+ * @author Zero13
+ * @Date 2020/12/15
  */
 @Component
 public class AuthFilter implements GlobalFilter, Ordered
@@ -33,8 +38,9 @@ public class AuthFilter implements GlobalFilter, Ordered
     private static final Logger log = LoggerFactory.getLogger(AuthFilter.class);
 
     // 排除过滤的 uri 地址，swagger排除自行添加
+    // 添加 微信登录接口过滤
     private static final String[] whiteList = { "/auth/login", "/code/v2/api-docs", "/schedule/v2/api-docs",
-            "/system/v2/api-docs", "/csrf" };
+            "/system/v2/api-docs", "/csrf", "/auth/wxlogin" };
 
     @Resource(name = "stringRedisTemplate")
     private ValueOperations<String, String> sops;
