@@ -39,6 +39,14 @@ public interface ISysMenuService
      */
     public Set<String> selectMenuPermsByUserId(Long userId);
 
+
+    /**
+     * 根据用户ID查询接口权限
+     * @param userId
+     * @return
+     */
+    public Set<String> selectMenuInterfacePathByUserId(Long userId);
+
     /**
      * 根据用户ID查询菜单树信息
      * 

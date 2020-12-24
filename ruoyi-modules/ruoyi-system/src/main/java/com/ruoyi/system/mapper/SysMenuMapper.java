@@ -44,6 +44,14 @@ public interface SysMenuMapper
      */
     public List<String> selectMenuPermsByUserId(Long userId);
 
+
+    /**
+     * 根据用户ID查询接口列表
+     * @param UserId
+     * @return
+     */
+    public List<String> selectMenuInterfacePathByUserId(Long UserId);
+
     /**
      * 根据用户ID查询菜单
      * 

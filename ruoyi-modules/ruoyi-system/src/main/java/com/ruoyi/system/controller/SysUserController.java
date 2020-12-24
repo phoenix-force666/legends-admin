@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.common.core.web.page.PageDomain;
+import com.ruoyi.common.core.web.page.TableSupport;
+import com.ruoyi.system.dto.user.GetUsersByGroupReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -112,6 +116,9 @@ public class SysUserController extends BaseController
         Set<String> roles = permissionService.getRolePermission(sysUser.getUserId());
         // 权限集合
         Set<String> permissions = permissionService.getMenuPermission(sysUser.getUserId());
+
+        // 接口集合
+        Set<String> path = permissionService.getMenuPermission(sysUser.getUserId());
         LoginUser sysUserVo = new LoginUser();
         sysUserVo.setSysUser(sysUser);
         sysUserVo.setRoles(roles);
@@ -132,10 +139,14 @@ public class SysUserController extends BaseController
         Set<String> roles = permissionService.getRolePermission(userId);
         // 权限集合
         Set<String> permissions = permissionService.getMenuPermission(userId);
+
+        Set<String> interfaces = permissionService.getMenuInterfacePathByUserId(userId);
+
         AjaxResult ajax = AjaxResult.success();
         ajax.put("user", userService.selectUserById(userId));
         ajax.put("roles", roles);
         ajax.put("permissions", permissions);
+        ajax.put("interfaces", interfaces);
         return ajax;
     }
 
@@ -181,7 +192,7 @@ public class SysUserController extends BaseController
         }
         user.setCreateBy(SecurityUtils.getUsername());
         user.setPassword(SecurityUtils.encryptPassword(user.getPassword()));
-        return toAjax(userService.insertUser(user));
+        return toAjax(userService.insertUser(user,"insert"));
     }
 
     /**
@@ -241,5 +252,21 @@ public class SysUserController extends BaseController
         userService.checkUserAllowed(user);
         user.setUpdateBy(SecurityUtils.getUsername());
         return toAjax(userService.updateUserStatus(user));
+    }
+
+    /**
+     * 状态修改
+     */
+    @PreAuthorize(hasPermi = "system:user:groupList")
+    @Log(title = "用户管理", businessType = BusinessType.UPDATE)
+    @GetMapping("/users/{groupId}")
+    public TableDataInfo getUsersByGroup(@PathVariable("groupId") String groupId)
+    {
+        startPage();
+        PageDomain pageDomain = TableSupport.buildPageRequest();
+        Integer pageNum = pageDomain.getPageNum()==null?0:pageDomain.getPageNum();
+        Integer pageSize = pageDomain.getPageSize()==null?10:pageDomain.getPageSize();
+        List<SysUser> list = userService.getUsersByGroup(groupId,pageNum,pageSize);
+        return getDataTable(list);
     }
 }

@@ -44,6 +44,11 @@ public class LoginUser implements Serializable
     private Set<String> permissions;
 
     /**
+     * 接口列表
+     */
+    private Set<String> interfaces;
+
+    /**
      * 角色列表
      */
     private Set<String> roles;

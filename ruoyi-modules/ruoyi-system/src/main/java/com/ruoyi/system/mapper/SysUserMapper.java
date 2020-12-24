@@ -37,6 +37,8 @@ public interface SysUserMapper
      */
     public SysUser selectUserById(Long userId);
 
+    public List<SysUser> selectUserByList(List<String> userIds);
+
     /**
      * 新增用户信息
      * 

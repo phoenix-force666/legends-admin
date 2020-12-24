@@ -3,6 +3,7 @@ package com.ruoyi.system.service;
 import java.util.List;
 
 import com.ruoyi.system.api.domain.SysUser;
+import com.ruoyi.system.dto.user.GetUsersByGroupReq;
 
 /**
  * 用户 业务层
@@ -88,7 +89,7 @@ public interface ISysUserService
      * @param user 用户信息
      * @return 结果
      */
-    public int insertUser(SysUser user);
+    public int insertUser(SysUser user,String insertType);
 
     /**
      * 修改用户信息
@@ -165,4 +166,12 @@ public interface ISysUserService
      * @return 结果
      */
     public String importUser(List<SysUser> userList, Boolean isUpdateSupport, String operName);
+
+
+    /**
+     * 根据组获取用户列表
+     * @param groupId 组ID
+     * @return
+     */
+    public List<SysUser> getUsersByGroup(String groupId,Integer pageNum,Integer pageSize);
 }

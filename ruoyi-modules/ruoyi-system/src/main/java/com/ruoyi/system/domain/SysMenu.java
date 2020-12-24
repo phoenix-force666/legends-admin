@@ -42,7 +42,7 @@ public class SysMenu extends BaseEntity
     /** 是否为外链（0是 1否） */
     private String isFrame;
 
-    /** 类型（M目录 C菜单 F按钮） */
+    /** 类型（M目录 C菜单 F按钮 I接口） */
     private String menuType;
 
     /** 显示状态（0显示 1隐藏） */
@@ -56,6 +56,9 @@ public class SysMenu extends BaseEntity
 
     /** 菜单图标 */
     private String icon;
+
+    /** 接口地址*/
+    private String interfacePath;
 
     /** 子菜单 */
     private List<SysMenu> children = new ArrayList<SysMenu>();
@@ -182,6 +185,14 @@ public class SysMenu extends BaseEntity
         return perms;
     }
 
+    public String getInterfacePath() {
+        return interfacePath;
+    }
+
+    public void setInterfacePath(String interfacePath) {
+        this.interfacePath = interfacePath;
+    }
+
     public void setPerms(String perms)
     {
         this.perms = perms;
@@ -206,7 +217,7 @@ public class SysMenu extends BaseEntity
     {
         this.children = children;
     }
-    
+
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
@@ -227,6 +238,7 @@ public class SysMenu extends BaseEntity
             .append("updateBy", getUpdateBy())
             .append("updateTime", getUpdateTime())
             .append("remark", getRemark())
+            .append("interfacePath", getInterfacePath())
             .toString();
     }
 }

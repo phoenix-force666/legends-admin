@@ -3,6 +3,13 @@ package com.ruoyi.system.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
+import com.ruoyi.common.core.domain.R;
+import com.ruoyi.system.api.model.LoginUser;
+import com.ruoyi.system.dto.user.AddUsersReq;
+import com.ruoyi.system.dto.user.ComResp;
+import com.ruoyi.system.service.remote.RemoteEngineService;
+import com.ruoyi.system.utils.CheckUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +61,9 @@ public class SysUserServiceImpl implements ISysUserService
 
     @Autowired
     private ISysConfigService configService;
+
+    @Autowired
+    private RemoteEngineService remoteEngineService;
 
     /**
      * 根据条件分页查询用户列表
@@ -211,7 +221,7 @@ public class SysUserServiceImpl implements ISysUserService
      */
     @Override
     @Transactional
-    public int insertUser(SysUser user)
+    public int insertUser(SysUser user,String insertType)
     {
         // 新增用户信息
         int rows = userMapper.insertUser(user);
@@ -219,6 +229,11 @@ public class SysUserServiceImpl implements ISysUserService
         insertUserPost(user);
         // 新增用户与角色管理
         insertUserRole(user);
+
+        //通知流程引擎新增用户
+        if("insert".equals(insertType)){
+            addUsers(user);
+        }
         return rows;
     }
 
@@ -358,6 +373,29 @@ public class SysUserServiceImpl implements ISysUserService
         }
     }
 
+
+    /**
+     * 通知流程引擎新增用户
+     */
+    public void addUsers(SysUser user){
+    List<AddUsersReq> users = new ArrayList<>();
+     AddUsersReq req = new AddUsersReq();
+     req.setId(user.getUserId()+"");
+     users.add(req);
+     remoteEngine(users);
+    }
+
+    /**
+     * 调用流程引擎
+     * @param users
+     */
+    private void remoteEngine(List<AddUsersReq> users){
+        //调用流程引擎新增用户
+        log.info("新增用户请求参数,{}", JSON.toJSONString(users));
+        ComResp loginUserR = remoteEngineService.addUsers(users);
+        log.info("新增用户返回参数,{}", JSON.toJSONString(loginUserR));
+    }
+
     /**
      * 通过用户ID删除用户
      * 
@@ -410,6 +448,7 @@ public class SysUserServiceImpl implements ISysUserService
         StringBuilder successMsg = new StringBuilder();
         StringBuilder failureMsg = new StringBuilder();
         String password = configService.selectConfigByKey("sys.user.initPassword");
+        List<AddUsersReq> addUsers = new ArrayList<>();
         for (SysUser user : userList)
         {
             try
@@ -420,8 +459,11 @@ public class SysUserServiceImpl implements ISysUserService
                 {
                     user.setPassword(SecurityUtils.encryptPassword(password));
                     user.setCreateBy(operName);
-                    this.insertUser(user);
+                    this.insertUser(user,"import");
                     successNum++;
+                    AddUsersReq req = new AddUsersReq();
+                    req.setId(user.getUserId()+"");
+                    addUsers.add(req);
                     successMsg.append("<br/>" + successNum + "、账号 " + user.getUserName() + " 导入成功");
                 }
                 else if (isUpdateSupport)
@@ -445,6 +487,9 @@ public class SysUserServiceImpl implements ISysUserService
                 log.error(msg, e);
             }
         }
+        if(CheckUtil.listIsNotNull(addUsers)){
+            remoteEngine(addUsers);
+        }
         if (failureNum > 0)
         {
             failureMsg.insert(0, "很抱歉，导入失败！共 " + failureNum + " 条数据格式不正确，错误如下：");
@@ -455,6 +500,25 @@ public class SysUserServiceImpl implements ISysUserService
             successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
         }
         return successMsg.toString();
+    }
+
+
+    /**
+     * 根据组获取用户列表
+     * @param groupId 组ID
+     * @return
+     */
+    @Override
+    public List<SysUser> getUsersByGroup(String groupId,Integer pageNum,Integer pageSize) {
+        log.info("根据组查询用户请求参数,{}",groupId);
+        ComResp<List<String>> result = remoteEngineService.getUsersByGroupId(groupId,pageNum,pageSize);
+        log.info("根据组查询用户返回参数,{}",JSON.toJSONString(result));
+        List<SysUser> sysUsers = new ArrayList<>();
+        if(CheckUtil.listIsNotNull(result.getData())){
+            List<String> userIds = result.getData();
+            sysUsers = userMapper.selectUserByList(userIds);
+        }
+        return sysUsers;
     }
 
 }

@@ -94,6 +94,20 @@ public class SysMenuServiceImpl implements ISysMenuService
         return permsSet;
     }
 
+    @Override
+    public Set<String> selectMenuInterfacePathByUserId(Long userId) {
+        List<String> paths = menuMapper.selectMenuInterfacePathByUserId(userId);
+        Set<String> pathsSet = new HashSet<>();
+        for (String path : paths)
+        {
+            if (StringUtils.isNotEmpty(path))
+            {
+                pathsSet.addAll(Arrays.asList(path.trim().split(",")));
+            }
+        }
+        return pathsSet;
+    }
+
     /**
      * 根据用户ID查询菜单
      * 
