@@ -17,7 +17,7 @@ import java.util.List;
  * 
  * @author ruoyi
  */
-@FeignClient(value = "LEGENDS-PROCESS-ENGINE-DEV", fallbackFactory = RemoteUserFallbackFactory.class)
+@FeignClient(value = "LEGENDS-PROCESS-ENGINE", fallbackFactory = RemoteUserFallbackFactory.class)
 public interface RemoteEngineService
 {
     /**
