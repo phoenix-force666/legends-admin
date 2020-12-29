@@ -1,13 +1,13 @@
-package com.ruoyi.system.domain;
+package com.ruoyi.system.api.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import com.ruoyi.common.core.web.domain.BaseEntity;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import com.ruoyi.common.core.web.domain.BaseEntity;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 菜单权限表 sys_menu
@@ -59,6 +59,9 @@ public class SysMenu extends BaseEntity
 
     /** 接口地址*/
     private String interfacePath;
+
+    /** method*/
+    private String method;
 
     /** 子菜单 */
     private List<SysMenu> children = new ArrayList<SysMenu>();
@@ -193,6 +196,14 @@ public class SysMenu extends BaseEntity
         this.interfacePath = interfacePath;
     }
 
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
     public void setPerms(String perms)
     {
         this.perms = perms;
@@ -239,6 +250,7 @@ public class SysMenu extends BaseEntity
             .append("updateTime", getUpdateTime())
             .append("remark", getRemark())
             .append("interfacePath", getInterfacePath())
+            .append("method",getMethod())
             .toString();
     }
 }

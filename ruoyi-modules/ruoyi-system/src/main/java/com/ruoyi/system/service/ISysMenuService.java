@@ -3,7 +3,7 @@ package com.ruoyi.system.service;
 import java.util.List;
 import java.util.Set;
 
-import com.ruoyi.system.domain.SysMenu;
+import com.ruoyi.system.api.domain.SysMenu;
 import com.ruoyi.system.domain.vo.RouterVo;
 import com.ruoyi.system.domain.vo.TreeSelect;
 
@@ -45,7 +45,7 @@ public interface ISysMenuService
      * @param userId
      * @return
      */
-    public Set<String> selectMenuInterfacePathByUserId(Long userId);
+    public List<SysMenu> selectMenuInterfacePathByUserId(Long userId);
 
     /**
      * 根据用户ID查询菜单树信息

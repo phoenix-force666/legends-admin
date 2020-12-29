@@ -20,13 +20,4 @@ public interface ISysPermissionService
      */
     public Set<String> getMenuPermission(Long userId);
 
-
-    /**
-     * 获取接口权限
-     *
-     * @param userId 用户Id
-     * @return 菜单权限信息
-     */
-    public Set<String> getMenuInterfacePathByUserId(Long userId);
-
 }

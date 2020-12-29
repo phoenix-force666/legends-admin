@@ -2,6 +2,7 @@ package com.ruoyi.system.service.impl;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -59,28 +60,6 @@ public class SysPermissionServiceImpl implements ISysPermissionService
         else
         {
             perms.addAll(menuService.selectMenuPermsByUserId(userId));
-        }
-        return perms;
-    }
-
-
-    /**
-     * 根据用户ID查询接口权限
-     * @param userId 用户Id
-     * @return
-     */
-    @Override
-    public Set<String> getMenuInterfacePathByUserId(Long userId) {
-
-        Set<String> perms = new HashSet<String>();
-        // 管理员拥有所有权限
-        if (SysUser.isAdmin(userId))
-        {
-            perms.add("all");
-        }
-        else
-        {
-            perms.addAll(menuService.selectMenuInterfacePathByUserId(userId));
         }
         return perms;
     }

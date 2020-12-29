@@ -8,19 +8,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.ruoyi.system.api.domain.SysMenu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.common.core.constant.UserConstants;
 import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.security.utils.SecurityUtils;
 import com.ruoyi.system.api.domain.SysUser;
-import com.ruoyi.system.domain.SysMenu;
 import com.ruoyi.system.domain.vo.MetaVo;
 import com.ruoyi.system.domain.vo.RouterVo;
 import com.ruoyi.system.domain.vo.TreeSelect;
 import com.ruoyi.system.mapper.SysMenuMapper;
 import com.ruoyi.system.mapper.SysRoleMenuMapper;
 import com.ruoyi.system.service.ISysMenuService;
+
 
 /**
  * 菜单 业务层处理
@@ -95,17 +97,19 @@ public class SysMenuServiceImpl implements ISysMenuService
     }
 
     @Override
-    public Set<String> selectMenuInterfacePathByUserId(Long userId) {
-        List<String> paths = menuMapper.selectMenuInterfacePathByUserId(userId);
-        Set<String> pathsSet = new HashSet<>();
-        for (String path : paths)
+    public List<SysMenu> selectMenuInterfacePathByUserId(Long userId) {
+        List<SysMenu> menuList = null;
+        // 管理员显示所有菜单信息
+        if (SysUser.isAdmin(userId))
         {
-            if (StringUtils.isNotEmpty(path))
-            {
-                pathsSet.addAll(Arrays.asList(path.trim().split(",")));
-            }
+            SysMenu sysMenu = new SysMenu();
+            menuList = menuMapper.selectMenuList(sysMenu);
         }
-        return pathsSet;
+        else
+        {
+            menuList = menuMapper.selectMenuInterfacePathByUserId(userId);
+        }
+        return menuList;
     }
 
     /**

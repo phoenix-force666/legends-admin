@@ -1,7 +1,10 @@
 package com.ruoyi.system.api.model;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
+
+import com.ruoyi.system.api.domain.SysMenu;
 import com.ruoyi.system.api.domain.SysUser;
 
 /**
@@ -46,7 +49,7 @@ public class LoginUser implements Serializable
     /**
      * 接口列表
      */
-    private Set<String> interfaces;
+    private List<SysMenu> interfaces;
 
     /**
      * 角色列表
@@ -136,5 +139,13 @@ public class LoginUser implements Serializable
     public void setSysUser(SysUser sysUser)
     {
         this.sysUser = sysUser;
+    }
+
+    public List<SysMenu> getInterfaces() {
+        return interfaces;
+    }
+
+    public void setInterfaces(List<SysMenu> interfaces) {
+        this.interfaces = interfaces;
     }
 }

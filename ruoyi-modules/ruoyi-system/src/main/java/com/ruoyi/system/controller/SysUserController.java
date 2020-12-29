@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ruoyi.common.core.web.page.PageDomain;
 import com.ruoyi.common.core.web.page.TableSupport;
-import com.ruoyi.system.dto.user.GetUsersByGroupReq;
+import com.ruoyi.system.api.domain.SysMenu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,6 +38,7 @@ import com.ruoyi.system.service.ISysPermissionService;
 import com.ruoyi.system.service.ISysPostService;
 import com.ruoyi.system.service.ISysRoleService;
 import com.ruoyi.system.service.ISysUserService;
+import com.ruoyi.system.service.ISysMenuService;
 
 /**
  * 用户信息
@@ -59,6 +60,9 @@ public class SysUserController extends BaseController
 
     @Autowired
     private ISysPermissionService permissionService;
+
+    @Autowired
+    private ISysMenuService sysMenuService;
 
     /**
      * 获取用户列表
@@ -119,10 +123,13 @@ public class SysUserController extends BaseController
 
         // 接口集合
         Set<String> path = permissionService.getMenuPermission(sysUser.getUserId());
+
+        List<SysMenu> sysMenus = sysMenuService.selectMenuInterfacePathByUserId(sysUser.getUserId());
         LoginUser sysUserVo = new LoginUser();
         sysUserVo.setSysUser(sysUser);
         sysUserVo.setRoles(roles);
         sysUserVo.setPermissions(permissions);
+        sysUserVo.setInterfaces(sysMenus);
         return R.ok(sysUserVo);
     }
 
@@ -140,13 +147,10 @@ public class SysUserController extends BaseController
         // 权限集合
         Set<String> permissions = permissionService.getMenuPermission(userId);
 
-        Set<String> interfaces = permissionService.getMenuInterfacePathByUserId(userId);
-
         AjaxResult ajax = AjaxResult.success();
         ajax.put("user", userService.selectUserById(userId));
         ajax.put("roles", roles);
         ajax.put("permissions", permissions);
-        ajax.put("interfaces", interfaces);
         return ajax;
     }
 
@@ -230,7 +234,7 @@ public class SysUserController extends BaseController
     /**
      * 重置密码
      */
-    @PreAuthorize(hasPermi = "system:user:edit")
+    @PreAuthorize(hasPermi = "system:user:resetPwd")
     @Log(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping("/resetPwd")
     public AjaxResult resetPwd(@RequestBody SysUser user)
@@ -255,11 +259,10 @@ public class SysUserController extends BaseController
     }
 
     /**
-     * 状态修改
+     * 根据组获取用户
      */
-    @PreAuthorize(hasPermi = "system:user:groupList")
     @Log(title = "用户管理", businessType = BusinessType.UPDATE)
-    @GetMapping("/users/{groupId}")
+    @GetMapping("/getByGroup/{groupId}")
     public TableDataInfo getUsersByGroup(@PathVariable("groupId") String groupId)
     {
         startPage();

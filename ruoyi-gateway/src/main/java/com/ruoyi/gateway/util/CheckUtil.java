@@ -1,8 +1,5 @@
-package com.ruoyi.system.utils;
+package com.ruoyi.gateway.util;
 
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.servlet.mvc.condition.PatternsRequestCondition;
 import java.util.List;
 
 /**
@@ -11,9 +8,6 @@ import java.util.List;
  * @date 2017年6月15日 下午2:58:32
  */
 public class CheckUtil {
-
-	@Autowired
-	PatternsRequestCondition patternsRequestCondition;
 
 	
 	public static boolean isNull(Object o){
