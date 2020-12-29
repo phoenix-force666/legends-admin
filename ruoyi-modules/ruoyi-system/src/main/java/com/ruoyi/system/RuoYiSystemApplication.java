@@ -1,5 +1,6 @@
 package com.ruoyi.system;
 
+import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
 import com.ruoyi.common.security.annotation.EnableCustomConfig;
@@ -17,6 +18,7 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableRyFeignClients
 @SpringCloudApplication
 @ComponentScan(basePackages = {"com.ruoyi"})
+@EnableApolloConfig
 public class RuoYiSystemApplication
 {
     public static void main(String[] args)

@@ -1,5 +1,6 @@
 package com.ruoyi.auth;
 
+import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
 import com.ruoyi.common.security.annotation.EnableRyFeignClients;
@@ -11,6 +12,7 @@ import com.ruoyi.common.security.annotation.EnableRyFeignClients;
  */
 @EnableRyFeignClients
 @SpringCloudApplication
+@EnableApolloConfig
 public class RuoYiAuthApplication
 {
     public static void main(String[] args)
